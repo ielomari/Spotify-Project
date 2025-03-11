@@ -15,8 +15,7 @@ if ("release_year" %in% colnames(spotify_data)) {
 
 ui <- page_sidebar(
   title = "🎵 Spotify Music Explorer",
-    
-    sidebar = sidebar(
+  sidebar = sidebar(
       selectInput("genre", "Choose a Genre:", 
                   choices = c("All", unique(spotify_data$genre)),  
                   selected = "All"),
@@ -26,13 +25,13 @@ ui <- page_sidebar(
                   selected = "All")
     ),
     
-    body = navset_tab(
+  navset_tab(
       nav_panel(title = "Danceability vs Energy", plotOutput("scatterPlot", height = "400px")),
       nav_panel(title = "Artist Timeline", plotOutput("timelinePlot", height = "400px")),
       nav_panel(title = "Songs Table", DTOutput("songTable"))
     ),
     
-    theme = bs_theme(bootswatch = "minty")  # Apply a modern theme
+  theme = bs_theme(bootswatch = "minty")  # Apply a modern theme
   )
 
 
