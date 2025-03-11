@@ -1,6 +1,7 @@
 library(shiny)
 library(tidyverse)
 library(DT)
+library(bslib)
 
 # Load the dataset
 spotify_data <- read.csv("data/SpotifyFeatures.csv")
@@ -12,12 +13,10 @@ if ("release_year" %in% colnames(spotify_data)) {
   spotify_data$release_year <- sample(2000:2023, nrow(spotify_data), replace = TRUE)  # Dummy data if missing
 }
 
-# Define UI
-ui <- fluidPage(
-  titlePanel("🎵 Spotify Music Explorer"),
-  
-  sidebarLayout(
-    sidebarPanel(
+ui <- page_sidebar(
+  title = "🎵 Spotify Music Explorer",
+    
+    sidebar = sidebar(
       selectInput("genre", "Choose a Genre:", 
                   choices = c("All", unique(spotify_data$genre)),  
                   selected = "All"),
@@ -27,15 +26,15 @@ ui <- fluidPage(
                   selected = "All")
     ),
     
-    mainPanel(
-      tabsetPanel(
-        tabPanel("Danceability vs Energy", plotOutput("scatterPlot")),
-        tabPanel("Artist Timeline", plotOutput("timelinePlot"))
-      ),
-      DTOutput("songTable")
-    )
+    body = navset_tab(
+      nav_panel(title = "Danceability vs Energy", plotOutput("scatterPlot", height = "400px")),
+      nav_panel(title = "Artist Timeline", plotOutput("timelinePlot", height = "400px")),
+      nav_panel(title = "Songs Table", DTOutput("songTable"))
+    ),
+    
+    theme = bs_theme(bootswatch = "minty")  # Apply a modern theme
   )
-)
+
 
 # Define Server
 server <- function(input, output, session) {
