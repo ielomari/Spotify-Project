@@ -5,23 +5,24 @@ library(bslib)
 
 # Load the dataset
 spotify_data <- read.csv("data/SpotifyFeatures.csv")
+sampled_data <- spotify_data[sample(nrow(spotify_data), 500), ]
 
 # Ensure release year column is numeric (if applicable)
-if ("release_year" %in% colnames(spotify_data)) {
-  spotify_data$release_year <- as.numeric(spotify_data$release_year)
+if ("release_year" %in% colnames(sampled_data)) {
+  sampled_data$release_year <- as.numeric(sampled_data$release_year)
 } else {
-  spotify_data$release_year <- sample(2000:2023, nrow(spotify_data), replace = TRUE)  # Dummy data if missing
+  sampled_data$release_year <- sample(2000:2023, nrow(sampled_data), replace = TRUE)  # Dummy data if missing
 }
 
 ui <- page_sidebar(
   title = "🎵 Spotify Music Explorer",
   sidebar = sidebar(
       selectInput("genre", "Choose a Genre:", 
-                  choices = c("All", unique(spotify_data$genre)),  
+                  choices = c("All", unique(sampled_data$genre)),  
                   selected = "All"),
       
       selectInput("artist", "Choose an Artist:", 
-                  choices = c("All", unique(spotify_data$artist_name)),  
+                  choices = c("All", unique(sampled_data$artist_name)),  
                   selected = "All")
     ),
     
@@ -40,7 +41,7 @@ server <- function(input, output, session) {
   
   # Update artist choices dynamically based on selected genre
   observeEvent(input$genre, {
-    filtered_artists <- spotify_data %>%
+    filtered_artists <- sampled_data %>%
       filter(genre == input$genre | input$genre == "All") %>%
       pull(artist_name) %>%
       unique()
@@ -51,9 +52,9 @@ server <- function(input, output, session) {
   # Filter data based on genre selection
   filtered_data <- reactive({
     if (input$genre == "All") {
-      spotify_data
+      sampled_data
     } else {
-      spotify_data %>% filter(genre == input$genre)
+      sampled_data %>% filter(genre == input$genre)
     }
   })
   
@@ -69,9 +70,9 @@ server <- function(input, output, session) {
   # Filter data based on artist selection
   artist_data <- reactive({
     if (input$artist == "All") {
-      spotify_data
+      sampled_data
     } else {
-      spotify_data %>% filter(artist_name == input$artist)
+      sampled_data %>% filter(artist_name == input$artist)
     }
   })
   
