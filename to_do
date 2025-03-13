@@ -1,0 +1,9 @@
+- i don't see renv set up
+- optimize
+  > fread()
+  > data.table
+- improve the structure of your folder
+- add dark/light
+- upgrade to dynamic graphics
+  > switch to timeviz and plotly
+- switch DT to reactable
